@@ -1,7 +1,7 @@
 <?php
 class TinymceHelper extends AppHelper
 {
-	var $helpers = array('Form', 'Javascript', 'Html', 'Advform.WysiwygproFileBrowser');
+	var $helpers = array('Form', 'Javascript', 'Html', 'Advform.Wysiwygpro');
 	var $embedded = false;
 
 	function embed()
@@ -59,7 +59,7 @@ class TinymceHelper extends AppHelper
 		});
 	}
 JS;
-		$this->WysiwygproFileBrowser->embed();
+		$this->Wysiwygpro->embedFileBrowser();
 		$this->Javascript->codeBlock($js, array('inline' => false));
 	}
 

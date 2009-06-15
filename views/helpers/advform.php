@@ -3,7 +3,7 @@ App::import('Helper', 'Form');
 
 class AdvformHelper extends FormHelper {
 
-	var $helpers = array('Html', 'Javascript', 'Form', 'Advform.WysiwygproFileBrowser', 'Advform.Tinymce', 'Advform.Files');
+	var $helpers = array('Html', 'Javascript', 'Form', 'Advform.Wysiwygpro', 'Advform.Tinymce', 'Advform.Files');
 
 	var $wysiwygEmbedded = false;
 	var $calendarEmbedded = false;
@@ -76,7 +76,7 @@ JS;
 		}
 
 		// Custom methods provided by this class
-		$custom = array('file', 'image', 'flash', 'number', 'link', 'wysiwyg', 'calendar');
+		$custom = array('document', 'image', 'media', 'number', 'link', 'wysiwyg', 'calendar');
 		if ( in_array($type, $custom) ) {
 			return $this->$type($fieldName, $options);
 		}
@@ -88,28 +88,23 @@ JS;
 		return $this->$type->input($fieldName, $options, $type);
 	}
 
-	function file($fieldName, $options) {
-		return $this->_file($fieldName, $options, 'file');
+	function document($fieldName, $options) {
+		return $this->_file($fieldName, $options, 'document');
 	}
 	function image($fieldName, $options) {
 		return $this->_file($fieldName, $options, 'image');
 	}
-	function flash($fieldName, $options) {
-		return $this->_file($fieldName, $options, 'flash');
+	function media($fieldName, $options) {
+		return $this->_file($fieldName, $options, 'media');
+	}
+	function link($fieldName, $options) {
+		return $this->_file($fieldName, $options, 'link');
 	}
 
 	/**
 	* @todo
 	*/
 	function number($fieldName, $options) {
-		$options['type'] = 'text';
-		return parent::input($fieldName, $options);
-	}
-
-	/**
-	* @todo
-	*/
-	function link($fieldName, $options) {
 		$options['type'] = 'text';
 		return parent::input($fieldName, $options);
 	}
