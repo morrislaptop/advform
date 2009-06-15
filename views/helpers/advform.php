@@ -3,11 +3,10 @@ App::import('Helper', 'Form');
 
 class AdvformHelper extends FormHelper {
 
-	var $helpers = array('Html', 'Javascript');
+	var $helpers = array('Html', 'Javascript', 'Form', 'Advform.WysiwygproFileBrowser', 'Advform.Tinymce', 'Advform.Files');
 
 	var $wysiwygEmbedded = false;
 	var $calendarEmbedded = false;
-	var $focusEmbedded = false;
 
 	/**
 	* put your comment there...
@@ -32,6 +31,19 @@ class AdvformHelper extends FormHelper {
 		else {
 			return parent::create($model, $options);
 		}
+	}
+
+	function embedFocus() {
+		$js = <<<JS
+$(function() {
+	$("input, select, textarea").focus(function() {
+		$(this).parent("div.input").addClass("focused");
+	}).blur(function() {
+		$(this).parent("div.input").removeClass("focused");
+	});
+});
+JS;
+		$this->Javascript->codeBlock($js, array('inline' => false));
 	}
 
 	function addToValidates($model)
@@ -63,33 +75,49 @@ class AdvformHelper extends FormHelper {
 			$type = $options['type'];
 		}
 
-		if ( in_array($type, array('file', 'image', 'flash')) ) {
-			$options['type'] = 'file';
-			$options['div'] = array($type);
+		// Custom methods provided by this class
+		$custom = array('file', 'image', 'flash', 'number', 'link', 'wysiwyg', 'calendar');
+		if ( in_array($type, $custom) ) {
+			return $this->$type($fieldName, $options);
 		}
-		else if ( in_array($type, array('number', 'url')) ) {
-			$options['type'] = 'text';
-			$options['div'] = array($type);
-		}
-		else if ( 'wysiwyg' == $type ) {
-			$this->embedWysiwyg();
-			$options['type'] = 'textarea';
-			$options['class'] = 'tinymce';
-		}
-		else if ( 'calendar' == $type ) {
-			$this->embedCalendar();
-			$options['type'] = 'text';
-			$options['class'] = 'calendar';
-			if ( strpos($fieldName, '.') === false ) {
-				$fieldName = $model->name . '.' . $fieldName . '.date';
-			}
-			else {
-				$fieldName .= '.date';
-			}
-			$options['div'] = array($type);
-		}
-
 		return parent::input($fieldName, $options);
+	}
+
+	function _file($fieldName, $options, $type = null) {
+		$type = Configure::read('Advform.file');
+		return $this->$type->input($fieldName, $options, $type);
+	}
+
+	function file($fieldName, $options) {
+		return $this->_file($fieldName, $options, 'file');
+	}
+	function image($fieldName, $options) {
+		return $this->_file($fieldName, $options, 'image');
+	}
+	function flash($fieldName, $options) {
+		return $this->_file($fieldName, $options, 'flash');
+	}
+
+	/**
+	* @todo
+	*/
+	function number($fieldName, $options) {
+		$options['type'] = 'text';
+		return parent::input($fieldName, $options);
+	}
+
+	/**
+	* @todo
+	*/
+	function link($fieldName, $options) {
+		$options['type'] = 'text';
+		return parent::input($fieldName, $options);
+	}
+
+	function wysiwyg($fieldName, $options)
+	{
+		$type = Configure::read('Advform.wysiwyg');
+		return $this->$type->input($fieldName, $options);
 	}
 
 	function inputWithDefault($fieldName, $default, $options) {
@@ -142,65 +170,22 @@ $("#' . $id . '").focus(function() {
 	function embedWysiwygpro() {
 		debug('wysiwefey pro here we come');
 	}
-
-	function embedWysiwyg()
-	{
-		if ( $this->wysiwygEmbedded ) {
-			return;
-		}
-		$this->wysiwygEmbedded = true;
-		$type = Configure::read('Advform.wysiwyg');
-		$method = 'embed' . ucwords($type);
-		$this->$method();
+	function wysiwygpro() {
+		debug('putting it in');
 	}
 
-	function embedTinymce() {
-		$this->Javascript->link('tiny_mce/tiny_mce', false);
-		$js = <<<JS
-tinyMCE.init({
-    mode: "specific_textareas",
-    theme: "advanced",
-
-    // @TODO cleanup unneeded plugins
-    plugins: "style,paste,inlinepopups,table,imagemanager,filemanager",
-    doctype: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
-
-    // Theme options
-    theme_advanced_buttons1: "pasteword,bold,italic,|justifyleft,justifycenter,justifyright,|,formatselect,styleselect,removeformat,|,bullist,numlist,|,outdent,indent,blockquote,|,link,unlink,anchor,image,|,table,charmap,code",
-	theme_advanced_buttons2: "",
-	theme_advanced_buttons3: "",
-    theme_advanced_toolbar_location: "top",
-    theme_advanced_toolbar_align: "left",
-    theme_advanced_statusbar_location: "bottom",
-    theme_advanced_resizing: true,
-    theme_advanced_resize_horizontal: false,
-	theme_advanced_path: true,
-    width: '100%',
-
-    // File manager
-	plugin_simplebrowser_width : '800', //default
-	plugin_simplebrowser_height : '600', //default
-    plugin_simplebrowser_browselinkurl : '/uniform/js/tiny_mce/plugins/simplebrowser/browser.html?Connector=connectors/php/connector.php',
-    plugin_simplebrowser_browseimageurl : '/uniform/js/tiny_mce/plugins/simplebrowser/browser.html?Type=Image&Connector=connectors/php/connector.php',
-    plugin_simplebrowser_browseflashurl : '/uniform/js/tiny_mce/plugins/simplebrowser/browser.html?Type=Flash&Connector=connectors/php/connector.php',
-
-    // Which textareas?
-    editor_selector: "tinymce",
-
-    // URLs
-    relative_urls: false,
-    remove_script_host: true,
-    document_base_url: 'http://{$_SERVER['SERVER_NAME']}{$this->base}/',
-
-    // Paste Options
-
-
-    // CSS
-    content_css: '{$this->Html->url('/css/content.css')}'
-});
-JS;
-
-		$this->Javascript->codeBlock($js, array('inline' => false));
+	function calendar($fieldName, $options) {
+		$this->embedCalendar();
+		$options['type'] = 'text';
+		$options['class'] = 'calendar';
+		if ( strpos($fieldName, '.') === false ) {
+			$fieldName = $model->name . '.' . $fieldName . '.date';
+		}
+		else {
+			$fieldName .= '.date';
+		}
+		$options['div'] = array($type);
+		return parent::input($fieldName, $options);
 	}
 
 	function embedCalendar()
@@ -217,23 +202,6 @@ $(function() {
     	dateFormat: 'yy-mm-dd' ,
     	duration: ''
     });
-});
-JS;
-		$this->Javascript->codeBlock($js, array('inline' => false));
-	}
-
-	function embedFocus() {
-		if ( $this->focusEmbedded ) {
-			return;
-		}
-		$this->focusEmbedded = true;
-		$js = <<<JS
-$(function() {
-	$("input, select, textarea").focus(function() {
-		$(this).parent("div.input").addClass("focused");
-	}).blur(function() {
-		$(this).parent("div.input").removeClass("focused");
-	});
 });
 JS;
 		$this->Javascript->codeBlock($js, array('inline' => false));
