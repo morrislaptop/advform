@@ -162,13 +162,6 @@ $("#' . $id . '").focus(function() {
 		return $this->input($fieldName, array_merge($newOptions, $options));
 	}
 
-	function embedWysiwygpro() {
-		debug('wysiwefey pro here we come');
-	}
-	function wysiwygpro() {
-		debug('putting it in');
-	}
-
 	function calendar($fieldName, $options) {
 		$this->embedCalendar();
 		$options['type'] = 'text';
@@ -179,7 +172,7 @@ $("#' . $id . '").focus(function() {
 		else {
 			$fieldName .= '.date';
 		}
-		$options['div'] = array($type);
+		$options['div'] = array('calendar');
 		return parent::input($fieldName, $options);
 	}
 
