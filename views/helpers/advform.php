@@ -3,7 +3,7 @@ App::import('Helper', 'Form');
 
 class AdvformHelper extends FormHelper {
 
-	var $helpers = array('Html', 'Javascript', 'Form', 'Advform.Wysiwygpro', 'Advform.Tinymce', 'Advform.Files');
+	var $helpers = array('Html', 'Javascript', 'Form', 'Advform.Wysiwygpro', 'Advform.Tinymce', 'Advform.Files', 'Advform.JqueryCalendar');
 
 	var $wysiwygEmbedded = false;
 	var $calendarEmbedded = false;
@@ -114,6 +114,11 @@ JS;
 		$type = Configure::read('Advform.wysiwyg');
 		return $this->$type->input($fieldName, $options);
 	}
+	
+	function calendar($fieldName, $options) {
+		$type = Configure::read('Advform.calendar');
+		return $this->$type->input($fieldName, $options);
+	}
 
 	function inputWithDefault($fieldName, $default, $options) {
 		$this->setEntity($fieldName);
@@ -160,39 +165,6 @@ $("#' . $id . '").focus(function() {
 		);
 
 		return $this->input($fieldName, array_merge($newOptions, $options));
-	}
-
-	function calendar($fieldName, $options) {
-		$this->embedCalendar();
-		$options['type'] = 'text';
-		$options['class'] = 'calendar';
-		if ( strpos($fieldName, '.') === false ) {
-			$fieldName = $model->name . '.' . $fieldName . '.date';
-		}
-		else {
-			$fieldName .= '.date';
-		}
-		$options['div'] = array('calendar');
-		return parent::input($fieldName, $options);
-	}
-
-	function embedCalendar()
-	{
-		if ( $this->calendarEmbedded ) {
-			return;
-		}
-		$this->calendarEmbedded = true;
-		$this->Html->css('calendar/css/smoothness/jquery-ui-1.7.1.custom', null, null, false);
-		$this->Javascript->link('calendar/js/jquery-ui-1.7.1.custom.min', false);
-		$js = <<<JS
-$(function() {
-    $(".calendar").datepicker({
-    	dateFormat: 'yy-mm-dd' ,
-    	duration: ''
-    });
-});
-JS;
-		$this->Javascript->codeBlock($js, array('inline' => false));
 	}
 }
 ?>

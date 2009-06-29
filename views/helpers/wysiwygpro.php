@@ -30,7 +30,7 @@ class WysiwygproHelper extends AppHelper
 			return;
 		}
 		$this->embedded = true;
-		require_once("js/wysiwygPro/wysiwygPro.class.php");
+		require_once("vendors/wysiwygPro/wysiwygPro.class.php");
 		$this->editor = new wysiwygPro();
 		$this->editor->imageDir = WWW_ROOT . 'files' . DS . 'Images/';
 		$this->editor->imageURL = '/files/Images/';
