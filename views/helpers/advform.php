@@ -112,12 +112,22 @@ JS;
 	function wysiwyg($fieldName, $options)
 	{
 		$type = Configure::read('Advform.wysiwyg');
-		return $this->$type->input($fieldName, $options);
+		if ( $type ) {
+			return $this->$type->input($fieldName, $options);
+		}
+		else {
+			return parent::input($fieldName, $options);
+		}
 	}
 	
 	function calendar($fieldName, $options) {
 		$type = Configure::read('Advform.calendar');
-		return $this->$type->input($fieldName, $options);
+		if ( $type ) {
+			return $this->$type->input($fieldName, $options);
+		}
+		else {
+			return parent::input($fieldName, $options);
+		}
 	}
 
 	function inputWithDefault($fieldName, $default, $options) {
