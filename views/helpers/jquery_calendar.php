@@ -3,7 +3,7 @@ class JqueryCalendarHelper extends AppHelper
 {
 	var $helpers = array('Form', 'Javascript', 'Html');
 	var $embedded = false;
-	
+
 	function input($fieldName, $options) {
 		$this->embed();
 		$options['type'] = 'text';
@@ -24,8 +24,8 @@ class JqueryCalendarHelper extends AppHelper
     		return;
 	    }
 	    $this->embedded = true;
-		$this->Html->css('/vendors/calendar/css/smoothness/jquery-ui-1.7.1.custom', null, null, false);
-		$this->Javascript->link('/vendors/calendar/js/jquery-ui-1.7.1.custom.min', false);
+		$this->Html->css('/js/calendar/css/ui-lightness/jquery-ui-1.7.2.custom', null, null, false);
+		$this->Javascript->link('/js/calendar/js/jquery-ui-1.7.2.custom.min', false);
 		$js = <<<JS
 $(function() {
     $(".calendar").datepicker({
