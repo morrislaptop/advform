@@ -30,7 +30,7 @@ class WysiwygproHelper extends AppHelper
 			return;
 		}
 		$this->embedded = true;
-		require_once("vendors/wysiwygPro/wysiwygPro.class.php");
+		require_once("wysiwygPro/wysiwygPro.class.php");
 		$this->editor = new wysiwygPro();
 		$this->editor->imageDir = WWW_ROOT . 'files' . DS . 'Images/';
 		$this->editor->imageURL = '/files/Images/';
@@ -51,7 +51,7 @@ class WysiwygproHelper extends AppHelper
 		$this->editor->createFolders = true;
 		$this->editor->editImages = true;
 	}
-	
+
 	function embedFilebrowser() {
 		if ( $this->fileBrowserEmbedded ) {
 			return;
@@ -70,7 +70,7 @@ class WysiwygproHelper extends AppHelper
 			return $this->file($fieldName, $options);
 		}
 	}
-	
+
 	function file($fieldName, $options)
 	{
 		$this->embedFilebrowser();
@@ -105,23 +105,23 @@ class WysiwygproHelper extends AppHelper
 		$options['type'] = 'text';
 		return $this->Form->input($fieldName, $options);
 	}
-	
+
 	function wysiwyg($fieldName, $options)
 	{
 		// Embed.
 		$this->embed();
-		
+
 		// Config wysiwyg
 		$options = $this->_initInputField($fieldName);
 		$this->editor->name = $options['name'];
 		$this->editor->value = $options['value'];
-		
+
 		// Get code from vendor class
 		$code = $this->editor->fetch();
-		
+
 		// Generate textarea from form
 		$textarea = $this->Form->input($fieldName, $options);
-		
+
 		// Replace textarea from form with the code from vendor
 		$out = preg_replace('#<textarea\b[^>]*>(.*?)</textarea>#', $code, $textarea);
 		return $out;

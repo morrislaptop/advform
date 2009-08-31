@@ -10,7 +10,7 @@ class TinymceHelper extends AppHelper
     		return;
 	    }
 	    $this->embedded = true;
-	    $this->Javascript->link('/vendors/tiny_mce/tiny_mce', false);
+	    $this->Javascript->link('tiny_mce/tiny_mce', false);
 	    $js = <<<JS
 	tinyMCE.init({
 	    mode: "specific_textareas",
