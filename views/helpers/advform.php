@@ -3,7 +3,7 @@ App::import('Helper', 'Form');
 
 class AdvformHelper extends FormHelper {
 
-	var $helpers = array('Html', 'Javascript', 'Form', 'Advform.Wysiwygpro', 'Advform.Tinymce', 'Advform.Files', 'Advform.JqueryCalendar');
+	var $helpers = array('Html', 'Javascript', 'Form', 'Advform.Wysiwygpro', 'Advform.Tinymce', 'Advform.Files', 'Advform.JqueryCalendar',  'Advform.TinyBrowser');
 
 	var $wysiwygEmbedded = false;
 	var $calendarEmbedded = false;
@@ -119,7 +119,7 @@ JS;
 			return parent::input($fieldName, $options);
 		}
 	}
-	
+
 	function calendar($fieldName, $options) {
 		$type = Configure::read('Advform.calendar');
 		if ( $type ) {
