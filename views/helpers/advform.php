@@ -1,7 +1,6 @@
 <?php
-App::import('Helper', 'Form');
 
-class AdvformHelper extends FormHelper {
+class AdvformHelper extends AppHelper {
 
 	var $helpers = array('Html', 'Javascript', 'Form', 'Advform.Wysiwygpro', 'Advform.Tinymce', 'Advform.Files', 'Advform.JqueryCalendar',  'Advform.TinyBrowser');
 
@@ -9,65 +8,20 @@ class AdvformHelper extends FormHelper {
 	var $calendarEmbedded = false;
 
 	/**
-	* put your comment there...
-	*
 	* @var HtmlHelper
 	*/
 	var $Html;
+	/**
+	* @var FormHelper
+	*/
+	var $Form;
 
-	function create($model = null, $options = array())
-	{
-		// include required files.
-		$this->embedFocus();
-
-		if ( is_array($model) ) {
-			// put the first model into the form helper and then add onto the validations array with further models.
-			$out = parent::create(array_shift($model), $options);
-			foreach ($model as $model) {
-				$this->addToValidates($model);
-			}
-			return $out;
-		}
-		else {
-			return parent::create($model, $options);
-		}
-	}
-
-	function embedFocus() {
-		$js = <<<JS
-$(function() {
-	$("input, select, textarea").focus(function() {
-		$(this).parent("div.input").addClass("focused");
-	}).blur(function() {
-		$(this).parent("div.input").removeClass("focused");
-	});
-});
-JS;
-		$this->Javascript->codeBlock($js, array('inline' => false));
-	}
-
-	function addToValidates($model)
-	{
-		$object = ClassRegistry::getObject($model);
-		if (!empty($object->validate)) {
-			foreach ($object->validate as $validateField => $validateProperties) {
-				if (is_array($validateProperties)) {
-					$dims = Set::countDim($validateProperties);
-					if (($dims == 1 && !isset($validateProperties['required']) || (array_key_exists('required', $validateProperties) && $validateProperties['required'] !== false))) {
-						$validates[] = $validateField;
-					} elseif ($dims > 1) {
-						foreach ($validateProperties as $rule => $validateProp) {
-							if (is_array($validateProp) && (array_key_exists('required', $validateProp) && $validateProp['required'] !== false)) {
-								$validates[] = $validateField;
-							}
-						}
-					}
-				}
-			}
-		}
-		$this->fieldset['validates'] = array_merge($this->fieldset['validates'], $validates);
-	}
-
+	/**
+	* Generic input function, will use the helper methods in this class
+	* 
+	* @param mixed $fieldName
+	* @param mixed $options
+	*/
 	function input($fieldName, $options = array())
 	{
 		$type = null;
@@ -106,7 +60,7 @@ JS;
 	*/
 	function number($fieldName, $options) {
 		$options['type'] = 'text';
-		return parent::input($fieldName, $options);
+		return $this->Form->input($fieldName, $options);
 	}
 
 	function wysiwyg($fieldName, $options)
@@ -116,7 +70,7 @@ JS;
 			return $this->$type->input($fieldName, $options);
 		}
 		else {
-			return parent::input($fieldName, $options);
+			return $this->Form->input($fieldName, $options);
 		}
 	}
 
@@ -126,7 +80,7 @@ JS;
 			return $this->$type->input($fieldName, $options);
 		}
 		else {
-			return parent::input($fieldName, $options);
+			return $this->Form->input($fieldName, $options);
 		}
 	}
 
@@ -142,7 +96,7 @@ JS;
 
 		// if there is a value, return as normal
 		if ( !empty($value['value']) ) {
-			return parent::input($fieldName, $options);
+			return $this->Form->input($fieldName, $options);
 		}
 
 		$blurColor = '#808080';
@@ -174,7 +128,7 @@ $("#' . $id . '").focus(function() {
 			'style' => 'color: ' . $blurColor
 		);
 
-		return $this->input($fieldName, array_merge($newOptions, $options));
+		return $this->Form->input($fieldName, array_merge($newOptions, $options));
 	}
 }
 ?>
