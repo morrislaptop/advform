@@ -6,6 +6,7 @@ class AdvformHelper extends AppHelper {
 
 	var $wysiwygEmbedded = false;
 	var $calendarEmbedded = false;
+	var $customTypes = array('document', 'image', 'media', 'number', 'link', 'wysiwyg', 'calendar');
 
 	/**
 	* @var HtmlHelper
@@ -30,11 +31,10 @@ class AdvformHelper extends AppHelper {
 		}
 
 		// Custom methods provided by this class
-		$custom = array('document', 'image', 'media', 'number', 'link', 'wysiwyg', 'calendar');
-		if ( in_array($type, $custom) ) {
+		if ( in_array($type, $this->customTypes) ) {
 			return $this->$type($fieldName, $options);
 		}
-		return parent::input($fieldName, $options);
+		return $this->Form->input($fieldName, $options);
 	}
 
 	function _file($fieldName, $options, $type = null) {

@@ -71,7 +71,6 @@ class TinymceHelper extends AppHelper
 		});
 	}
 JS;
-		$this->Wysiwygpro->embedFileBrowser();
 		$this->Javascript->codeBlock($js, array('inline' => false));
 	}
 
