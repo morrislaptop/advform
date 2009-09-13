@@ -59,7 +59,7 @@ class TinymceHelper extends AppHelper
 
 
 	    // CSS
-	    content_css: '{$this->Html->url('/css/content.css')}'
+	    content_css: '{$this->Html->webroot('/css/content.css')}'
 	});
 
 	function TinyMceOpenFileBrowser(field_name, url, type, win)
