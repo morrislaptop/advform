@@ -28,6 +28,9 @@ class TinyBrowserHelper extends AppHelper
 		}
 
 		// construct button
+		if ( 'document' == $type ) {
+			$type = 'file';
+		}
 		$button = $this->Form->button('Select', array(
 			'onclick' => "tinyBrowserPopUp('" . $type . "','" . $id . "');"
 		));
